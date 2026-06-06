@@ -1,0 +1,45 @@
+{
+  "coreDataApi": {
+    "service": "core-data-api",
+    "endpoints": {
+      "ingestTicks": {
+        "method": "POST",
+        "path": "/market/ticks/ingest",
+        "body": { "symbol": "KC=F" }
+      },
+      "computeIndexes": {
+        "method": "POST",
+        "path": "/market/indexes/compute",
+        "body": { "symbol": "KC=F" }
+      },
+      "tickerTape": {
+        "method": "GET",
+        "path": "/market/ticks/ticker-tape",
+        "query": { "timeframe": "1m", "limit": 50 }
+      },
+      "marketChart": {
+        "method": "GET",
+        "path": "/market/ticks/chart",
+        "query": { "symbol": "KC=F", "timeframe": "1m", "limit": 500 }
+      },
+      "marketIndexes": {
+        "method": "GET",
+        "path": "/market/indexes",
+        "query": { "symbol": "KC=F", "timeframe": "1m", "limit": 100 }
+      }
+    }
+  },
+  "gcp": {
+    "cloudRunJob": {
+      "script": "comex/scripts/deploy_market_temporal_job_cloudrun.sh",
+      "defaults": {
+        "JOB_NAME": "market-temporal",
+        "REGION": "us-central1",
+        "SCHEDULE": "*/5 * * * *",
+        "SYMBOLS": "GC=F SI=F HG=F PL=F PA=F CL=F NG=F HO=F RB=F BZ=F ZC=F ZW=F ZS=F ZM=F ZL=F KC=F RC=F CC=F SB=F CT=F OJ=F LE=F GF=F HE=F LBS=F DC=F"
+      },
+      "requiredEnv": ["PROJECT_ID", "CORE_DATA_API_URL"],
+      "requiredSecret": "market-sync-token"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+services:
+  tests:
+    build:
+      context: .
+    environment:
+      PYTHONPATH: /app
+    command: ["python", "-m", "pytest", "-q"]

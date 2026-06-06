@@ -1,0 +1,7 @@
+.env
+__pycache__/
+.pytest_cache/
+.venv/
+.venvs/
+node_modules/
+core-data-api/dist/

@@ -1,0 +1,76 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/chat",
+      "destination": "https://comex-api-iugpkvri4q-uc.a.run.app/v1/request"
+    },
+    {
+      "source": "/api/create-checkout-session",
+      "destination": "https://comex-api-iugpkvri4q-uc.a.run.app/api/create-checkout-session"
+    },
+    {
+      "source": "/api/create-portal-session",
+      "destination": "https://comex-api-iugpkvri4q-uc.a.run.app/api/create-portal-session"
+    },
+    {
+      "source": "/api/stripe/webhook",
+      "destination": "https://comex-api-iugpkvri4q-uc.a.run.app/api/stripe/webhook"
+    },
+    {
+      "source": "/api/subscription/sync",
+      "destination": "https://comex-api-iugpkvri4q-uc.a.run.app/api/subscription/sync"
+    },
+    {
+      "source": "/api/subscription/sync-from-token",
+      "destination": "https://comex-api-iugpkvri4q-uc.a.run.app/api/subscription/sync-from-token"
+    },
+    {
+      "source": "/api/sales",
+      "destination": "https://core-data-api-iugpkvri4q-uc.a.run.app/sales"
+    },
+    {
+      "source": "/api/buy-orders",
+      "destination": "https://core-data-api-iugpkvri4q-uc.a.run.app/buy-orders"
+    },
+    {
+      "source": "/api/matches/explain",
+      "destination": "https://core-data-api-iugpkvri4q-uc.a.run.app/matches/explain"
+    },
+    {
+      "source": "/api/matches",
+      "destination": "https://core-data-api-iugpkvri4q-uc.a.run.app/matches"
+    },
+    {
+      "source": "/api/alerts",
+      "destination": "https://core-data-api-iugpkvri4q-uc.a.run.app/alerts"
+    },
+    {
+      "source": "/api/vector/search",
+      "destination": "https://core-data-api-iugpkvri4q-uc.a.run.app/vector/search"
+    },
+    {
+      "source": "/api/market/coffee/latest",
+      "destination": "https://core-data-api-iugpkvri4q-uc.a.run.app/market/coffee/latest"
+    },
+    {
+      "source": "/api/news",
+      "destination": "https://core-data-api-iugpkvri4q-uc.a.run.app/news"
+    },
+    {
+      "source": "/__/auth/:path*",
+      "destination": "https://blog-471121.firebaseapp.com/__/auth/:path*"
+    },
+    {
+      "source": "/__/firebase/init.json",
+      "destination": "https://blog-471121.firebaseapp.com/__/firebase/init.json"
+    },
+    {
+      "source": "/__/firebase/init.js",
+      "destination": "https://blog-471121.firebaseapp.com/__/firebase/init.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "comexagent",
+  "version": "0.0.0",
+  "private": true,
+  "description": "ComexAgent monorepo",
+  "workspaces": [
+    "apps/comex-app-web",
+    "apps/comex/core-data-api"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev -w react-example",
+    "dev:api": "npm run start:dev -w core-data-api",
+    "build:web": "npm run build -w react-example",
+    "build:api": "npm run build -w core-data-api",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  }
+}
