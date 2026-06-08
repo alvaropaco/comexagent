@@ -1,0 +1,85 @@
+# ComexAgent local stack.
+#
+#   docker compose up --build
+#
+# Services & host ports:
+#   web            http://localhost:3000   (Vite SSR + Express)
+#   core-data-api  http://localhost:3001   (NestJS)
+#   comex-api      http://localhost:8000   (Python / FastAPI)
+#   mongo          localhost:27017         (bundled MongoDB)
+#
+# Secrets (OPENAI_API_KEY, STRIPE_*, FIREBASE_*) are read from the per-app
+# .env files via env_file. MONGO_URI is overridden here to point at the
+# bundled mongo service; delete those overrides to use a remote URI from .env.
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  core-data-api:
+    build:
+      context: ./apps/comex/core-data-api
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    env_file:
+      - path: ./apps/comex/.env
+        required: false
+    environment:
+      NODE_ENV: production
+      PORT: "8080"
+      MONGO_URI: mongodb://mongo:27017/comex
+      DB_MONGO_URI: mongodb://mongo:27017/comex
+      PUBSUB_ENABLED: "false"
+      MARKET_SYNC_TOKEN: ${MARKET_SYNC_TOKEN:-dev-local-token}
+    ports:
+      - "3001:8080"
+
+  comex-api:
+    build:
+      context: ./apps/comex
+      dockerfile: Dockerfile.cloudrun
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    env_file:
+      - path: ./apps/comex/.env
+        required: false
+    environment:
+      PORT: "8080"
+      MONGO_URI: mongodb://mongo:27017/comex
+    ports:
+      - "8000:8080"
+
+  web:
+    build:
+      context: ./apps/comex-app-web
+    restart: unless-stopped
+    depends_on:
+      - core-data-api
+      - comex-api
+    env_file:
+      - path: ./apps/comex-app-web/.env
+        required: false
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      VITE_CORE_DATA_API_URL: http://core-data-api:8080
+      VITE_COMEX_API_URL: http://comex-api:8080
+    ports:
+      - "3000:3000"
+
+volumes:
+  mongo-data:
