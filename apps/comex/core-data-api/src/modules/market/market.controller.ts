@@ -139,7 +139,12 @@ export class MarketController {
 
     const symbol = (body.symbol ?? 'KC=F').trim() || 'KC=F';
     const timeframes = parseTimeframes(body.timeframes);
-    const results: Array<{ timeframe: MarketTimeframe; inserted: number; computedAt: string | null; reason?: string }> = [];
+    const results: Array<{
+      timeframe: MarketTimeframe;
+      inserted: number;
+      computedAt: string | null;
+      reason?: string;
+    }> = [];
     for (const tf of timeframes) {
       const r = await this.indexing.computeAndStoreLatest({
         symbol,
@@ -178,7 +183,11 @@ export class MarketController {
     @Query('timeframe') timeframe?: string,
     @Query('limit') limit?: string,
   ) {
-    const data = await this.temporalQuery.marketChart({ symbol, timeframe, limit });
+    const data = await this.temporalQuery.marketChart({
+      symbol,
+      timeframe,
+      limit,
+    });
     return { ok: true, ...data };
   }
 
@@ -188,7 +197,11 @@ export class MarketController {
     @Query('timeframe') timeframe?: string,
     @Query('limit') limit?: string,
   ) {
-    const data = await this.temporalQuery.marketIndexes({ symbol, timeframe, limit });
+    const data = await this.temporalQuery.marketIndexes({
+      symbol,
+      timeframe,
+      limit,
+    });
     return { ok: true, ...data };
   }
 }
