@@ -44,30 +44,32 @@ export class MarketController {
     this.token = this.config.get<string>('MARKET_SYNC_TOKEN');
   }
 
+  /**
+   * Require a valid sync token on every mutating endpoint, in all environments.
+   * Fails closed: if MARKET_SYNC_TOKEN is unset the endpoint is unavailable
+   * rather than silently open.
+   */
+  private assertAuthorized(token: string | undefined): void {
+    if (!this.token) {
+      throw new HttpException(
+        'MARKET_SYNC_TOKEN not configured',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    const provided = (token ?? '').trim();
+    const expected = this.token.trim();
+    if (!provided || provided !== expected) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+  }
+
   @Post('rehydrate')
   async rehydrate(
     @Headers('x-market-sync-token') token: string | undefined,
     @Body() body: Record<string, unknown>,
   ) {
     void body;
-    const env = (
-      this.config.get<string>('NODE_ENV') ??
-      process.env.NODE_ENV ??
-      'development'
-    ).toLowerCase();
-    if (env === 'production') {
-      if (!this.token) {
-        throw new HttpException(
-          'MARKET_SYNC_TOKEN not configured',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-      const provided = (token ?? '').trim();
-      const expected = this.token.trim();
-      if (!provided || provided !== expected) {
-        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-      }
-    }
+    this.assertAuthorized(token);
 
     const results = await this.rehydration.rehydrateAll();
     const okCount = results.filter((r) => r.ok).length;
@@ -90,24 +92,7 @@ export class MarketController {
     @Headers('x-market-sync-token') token: string | undefined,
     @Body() body: { sourceUrl?: string },
   ) {
-    const env = (
-      this.config.get<string>('NODE_ENV') ??
-      process.env.NODE_ENV ??
-      'development'
-    ).toLowerCase();
-    if (env === 'production') {
-      if (!this.token) {
-        throw new HttpException(
-          'MARKET_SYNC_TOKEN not configured',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-      const provided = (token ?? '').trim();
-      const expected = this.token.trim();
-      if (!provided || provided !== expected) {
-        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-      }
-    }
+    this.assertAuthorized(token);
 
     const sourceUrl = body.sourceUrl ?? 'https://comexlive.org/coffee/';
     const created = await this.market.syncCoffeeFromUrl(sourceUrl);
@@ -127,24 +112,7 @@ export class MarketController {
     @Headers('x-market-sync-token') token: string | undefined,
     @Body() body: { symbol?: string; commodity?: string; timeframes?: unknown },
   ) {
-    const env = (
-      this.config.get<string>('NODE_ENV') ??
-      process.env.NODE_ENV ??
-      'development'
-    ).toLowerCase();
-    if (env === 'production') {
-      if (!this.token) {
-        throw new HttpException(
-          'MARKET_SYNC_TOKEN not configured',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-      const provided = (token ?? '').trim();
-      const expected = this.token.trim();
-      if (!provided || provided !== expected) {
-        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-      }
-    }
+    this.assertAuthorized(token);
 
     const symbol = (body.symbol ?? 'KC=F').trim() || 'KC=F';
     const timeframes = parseTimeframes(body.timeframes);
@@ -167,24 +135,7 @@ export class MarketController {
     @Headers('x-market-sync-token') token: string | undefined,
     @Body() body: { symbol?: string; timeframes?: unknown; lookback?: number },
   ) {
-    const env = (
-      this.config.get<string>('NODE_ENV') ??
-      process.env.NODE_ENV ??
-      'development'
-    ).toLowerCase();
-    if (env === 'production') {
-      if (!this.token) {
-        throw new HttpException(
-          'MARKET_SYNC_TOKEN not configured',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-      const provided = (token ?? '').trim();
-      const expected = this.token.trim();
-      if (!provided || provided !== expected) {
-        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-      }
-    }
+    this.assertAuthorized(token);
 
     const symbol = (body.symbol ?? 'KC=F').trim() || 'KC=F';
     const timeframes = parseTimeframes(body.timeframes);

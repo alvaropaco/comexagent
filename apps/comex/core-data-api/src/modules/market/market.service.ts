@@ -6,6 +6,7 @@ import {
   CoffeeMarketSnapshot,
   CoffeeMarketSnapshotDocument,
 } from './coffee-market.schema';
+import { assertSafePublicUrl } from './safe-url';
 
 function stripHtmlToText(html: string): string {
   const noScript = html
@@ -46,7 +47,10 @@ export class MarketService {
   ) {}
 
   async syncCoffeeFromUrl(sourceUrl: string) {
+    // SSRF guard: only allowlisted public hosts, no redirects to internal targets.
+    await assertSafePublicUrl(sourceUrl);
     const resp = await fetch(sourceUrl, {
+      redirect: 'error',
       headers: {
         'user-agent': 'comex-core-data-api/1.0',
         accept: 'text/html,application/xhtml+xml',
