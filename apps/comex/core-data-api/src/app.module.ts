@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { AppController } from './app.controller';
 import { MongoModule } from './common/database/mongo.module';
 import { EventsModule } from './common/events/events.module';
 import { OutboxModule } from './common/outbox/outbox.module';
@@ -31,5 +32,6 @@ import { ToolsModule } from './tools/tools.module';
     AlertsModule,
     NewsModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

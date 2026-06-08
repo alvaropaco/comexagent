@@ -126,6 +126,11 @@ class OrchestrateRequest(BaseModel):
  
 
 
+@app.get("/")
+def root() -> Dict[str, Any]:
+    return {"ok": True, "service": "comex-api", "docs": "/docs", "health": "/health"}
+
+
 @app.get("/health")
 def health() -> Dict[str, Any]:
     return {"ok": True}
