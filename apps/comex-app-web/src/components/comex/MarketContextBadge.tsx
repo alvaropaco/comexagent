@@ -7,7 +7,7 @@ interface MarketContextBadgeProps {
 }
 
 export function MarketContextBadge({ marketData }: MarketContextBadgeProps) {
-  if (!marketData || !marketData.ok) return null;
+  if (!marketData || !marketData.ok || !marketData.latest) return null;
 
   return (
     <motion.div
